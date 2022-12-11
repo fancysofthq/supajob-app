@@ -1,0 +1,20 @@
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "tailwindConfig": "./tailwind.config.cjs",
+  "pugAttributeSeparator": "none",
+  "plugins": [
+    "@prettier/plugin-pug",
+    "prettier-plugin-solidity",
+    "prettier-plugin-tailwindcss"
+  ],
+  "overrides": [
+    {
+      "files": "*.sol",
+      "options": {
+        "printWidth": 79,
+        "tabWidth": 4
+      }
+    }
+  ]
+}
