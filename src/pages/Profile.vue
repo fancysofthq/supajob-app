@@ -14,11 +14,11 @@ import JobVue, { Kind as JobVueKind } from "@/components/Job.vue";
 import PFP from "supa-app/components/PFP.vue";
 import { useEth } from "supa-app/services/eth";
 
-const { account: connectedAccount } = useEth();
+const { account: connectedAccount, disconnect } = useEth();
 const { copy, copied } = useClipboard();
 
 const props = defineProps<{ profileAccount: Account; displayTitle: boolean }>();
-const emit = defineEmits(["disconnect", "exit"]);
+const emit = defineEmits(["exit"]);
 
 const jobs: ShallowRef<Job[]> = ref([]);
 
@@ -79,7 +79,7 @@ onMounted(async () => {
 
       button.rounded-lg.p-2.transition(
         v-if="isSelf"
-        @click="emit('disconnect')"
+        @click="disconnect(); emit('exit')"
         class="hover:bg-black/20 active:scale-95"
       )
         ArrowRightOnRectangleIcon.h-6.w-6.text-white

@@ -5,7 +5,7 @@ import CommonVue from "./Common.vue";
 import ProfileVue from "@/pages/Profile.vue";
 
 defineProps<{ open: boolean; account: Account }>();
-const emit = defineEmits(["close", "disconnect"]);
+const emit = defineEmits(["close"]);
 </script>
 
 <template lang="pug">
@@ -23,7 +23,6 @@ CommonVue(:open="open" @close="emit('close')" panel-class="w-full max-w-xl")
       ProfileVue(
         :profile-account="account"
         @exit="emit('close')"
-        @disconnect="emit('disconnect')"
         :display-title="false"
       )
 </template>

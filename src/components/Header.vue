@@ -57,7 +57,6 @@ Teleport(to="body")
     :account="account"
     :open="profileOpen"
     @close="profileOpen = false"
-    @disconnect="profileOpen = false; disconnect()"
   )
   Mint(
     v-if="account"
