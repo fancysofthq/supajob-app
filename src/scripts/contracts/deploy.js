@@ -28,11 +28,14 @@ async function deploy(contractName, deployOptions = {}, ...args) {
 }
 
 async function main() {
-  const ipft = await deploy("IPFT");
   await deploy(
     "JobBoard",
-    { libraries: { IPFT: ipft.address } },
-    ethers.utils.parseEther("0.01")
+    {
+      libraries: {
+        IPFT: process.env.IPFT_ADDRESS,
+      },
+    },
+    ethers.utils.parseEther("0.0025")
   );
 }
 

@@ -12,7 +12,7 @@ specifiers:
   '@ipld/unixfs': ^2.0.0
   '@nomiclabs/hardhat-ethers': ^2.2.1
   '@nomiclabs/hardhat-waffle': ^2.0.3
-  '@nxsf/ipft': ^0.1.1
+  '@nxsf/ipft': ^0.1.2
   '@openzeppelin/contracts': ^4.8.0
   '@prettier/plugin-pug': ^2.3.0
   '@solidity-parser/parser': ^0.14.5
@@ -55,7 +55,7 @@ dependencies:
   '@ipld/dag-cbor': 8.0.0
   '@ipld/dag-pb': 3.0.1
   '@ipld/unixfs': 2.0.0
-  '@nxsf/ipft': 0.1.1_wrdzugesl4pxuqpwitupq6bdxm
+  '@nxsf/ipft': 0.1.2_wrdzugesl4pxuqpwitupq6bdxm
   '@types/nprogress': 0.2.0
   '@vueuse/components': 9.6.0_vue@3.2.45
   '@vueuse/core': 9.6.0_vue@3.2.45
@@ -955,8 +955,9 @@ packages:
       ethers: 5.7.2
       hardhat: 2.12.3_typescript@4.9.3
 
-  /@nxsf/ipft/0.1.1_wrdzugesl4pxuqpwitupq6bdxm:
-    resolution: {integrity: sha512-iXWn9AyO5d2Dxb2RoEwIy5+pZOLar/mP1s9xEmAkopRWFwk+iRxe6hAhLXemSE5YX2KddHHMXoqETQ5DMhdVDw==, tarball: download/@nxsf/ipft/0.1.1/c96b59e0250dce9375ca5dc822a88528158b788c}
+  /@nxsf/ipft/0.1.2_wrdzugesl4pxuqpwitupq6bdxm:
+    resolution: {integrity: sha512-Z6Cr4/Wa3W0NpC1ChIpckSOJGWyZIiHg0NqZeACd3A7LQYZDV8ZC+XvtWZcQgtVPWH8MGBV+Kfs1rkevs96sbQ==, tarball: download/@nxsf/ipft/0.1.2/67d5f330538684e10fa15297029823e62eb15b6c}
+    engines: {node: '>=17.1.0'}
     dependencies:
       '@nomiclabs/hardhat-waffle': 2.0.3_fhoprgrf5ahziq4cf65djivbc4
       '@openzeppelin/contracts': 4.8.0
