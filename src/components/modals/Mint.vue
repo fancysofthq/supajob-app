@@ -55,6 +55,17 @@ const canMint: ComputedRef<boolean> = computed(
     previewImage.value !== undefined
 );
 
+const hasContent: ComputedRef<boolean> = computed(
+  () =>
+    !!previewImage.value ||
+    name.value.length > 0 ||
+    description.value.length > 0 ||
+    tags.value.length > 0 ||
+    payment.value.length > 0 ||
+    location.value.length > 0 ||
+    content.value.length > 0
+);
+
 enum Status {
   InProgress,
   Error,
@@ -210,10 +221,15 @@ async function mint() {
   }
 }
 
-function cleanup(): boolean {
+async function cleanup(): Promise<boolean> {
   if (inProgress.value) return false;
-  if (isComplete.value) return true;
-  // TODO: Confirmation digalog
+  if (
+    hasContent.value &&
+    !isComplete.value &&
+    !confirm("Discard unminted content?")
+  ) {
+    return false;
+  }
 
   minting.value = undefined;
   uploading.value = undefined;
@@ -232,8 +248,8 @@ function cleanup(): boolean {
   return true;
 }
 
-function tryClose(): void | null {
-  cleanup() ? emit("close") : null;
+async function tryClose(): Promise<void | null> {
+  (await cleanup()) ? emit("close") : null;
 }
 
 watchDebounced(
