@@ -12,13 +12,13 @@ const router = createRouter({
     {
       path: "/",
       component: Home,
-      meta: { name: "Home", doNotTerminateNProgress: true },
+      meta: { doNotTerminateNProgress: true },
     },
     {
       path: "/job/:cid",
       component: Job,
       meta: {
-        name: "Job",
+        title: "Job",
         doNotTerminateNProgress: true,
       },
       props: (route) => ({
@@ -28,7 +28,7 @@ const router = createRouter({
     {
       path: "/:name(\\w+\\.eth|0x[0-9a-fA-F]{40})",
       component: Profile,
-      meta: { name: "Profile" },
+      meta: { title: "Profile" },
       props: (route) => {
         if ((route.params.name as string).endsWith(".eth")) {
           return {

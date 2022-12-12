@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import HeaderVue from "./components/Header.vue";
 import { useEth } from "@fancysofthq/supa-app/services/eth";
-import { onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import nProgress from "nprogress";
+import { useTitle } from "@vueuse/core";
 
 const { init, onConnect } = useEth();
 const route = useRoute();
+
+const title = computed(() => {
+  return route.meta.title ? route.meta.title + " | SupaJob" : "SupaJob";
+});
+
+useTitle(title);
 
 nProgress.configure({ showSpinner: false });
 
