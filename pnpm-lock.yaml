@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@ethersproject/contracts': ^5.7.0
   '@ethersproject/providers': ^5.7.2
-  '@fancysofthq/supa-app': ^0.1.0
+  '@fancysofthq/supa-app': ^0.2.0
   '@headlessui/vue': ^1.7.4
   '@heroicons/vue': ^2.0.13
   '@ipld/car': ^5.0.1
@@ -48,7 +48,7 @@ specifiers:
   vue3-markdown-it: ^1.0.10
 
 dependencies:
-  '@fancysofthq/supa-app': 0.1.0
+  '@fancysofthq/supa-app': 0.2.0
   '@headlessui/vue': 1.7.4_vue@3.2.45
   '@heroicons/vue': 2.0.13_vue@3.2.45
   '@ipld/car': 5.0.1
@@ -522,8 +522,8 @@ packages:
       '@ethersproject/properties': 5.7.0
       '@ethersproject/strings': 5.7.0
 
-  /@fancysofthq/supa-app/0.1.0:
-    resolution: {integrity: sha512-/fUObYpC6vjWZnuc86KUYjF8zZo8TofU4fxYtuOEkgAi32cc+hJ0YSI+j9wco+bOV98zs2Dyl7Gg0WlgFumBKg==, tarball: download/@fancysofthq/supa-app/0.1.0/04881684985730906b9e01d9f4338a4beec2c903}
+  /@fancysofthq/supa-app/0.2.0:
+    resolution: {integrity: sha512-6MMbpYfjacG+hVtAh+eIvLt5GB0b/gw8eDV0TL+T+dF9pIlyBexA31LxVwr0IbW+pjYPk3maSUkBUFl7FPS4ww==, tarball: download/@fancysofthq/supa-app/0.2.0/6de5399f1109c65de8bbb0cb70d8fe844c95aa60}
     dependencies:
       '@ethersproject/contracts': 5.7.0
       '@ethersproject/providers': 5.7.2

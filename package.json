@@ -1,7 +1,7 @@
 {
   "name": "supajob-app",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "UNLICENSED",
   "scripts": {
     "dev": "vite",
@@ -11,7 +11,7 @@
     "contracts:deploy": "hardhat run src/scripts/contracts/deploy.js"
   },
   "dependencies": {
-    "@fancysofthq/supa-app": "^0.1.0",
+    "@fancysofthq/supa-app": "^0.2.0",
     "@headlessui/vue": "^1.7.4",
     "@heroicons/vue": "^2.0.13",
     "@ipld/car": "^5.0.1",

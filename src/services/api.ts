@@ -2,7 +2,7 @@ import { CID } from "multiformats/cid";
 import * as Web3Auth from "@fancysofthq/supa-app/services/Web3Auth";
 import { useEth } from "@fancysofthq/supa-app/services/eth";
 import { CarReader, CarWriter } from "@ipld/car";
-import { iteratorToStream } from "@fancysofthq/supa-app/utils/stream";
+import { iteratorToBuffer } from "@fancysofthq/supa-app/utils/iterable";
 import { Address } from "@fancysofthq/supa-app/services/eth/Address";
 
 export async function storeCar(file: CarReader): Promise<CID> {
@@ -31,6 +31,13 @@ export async function storeCar(file: CarReader): Promise<CID> {
   );
 
   const { writer: carWriter, out } = CarWriter.create(await file.getRoots());
+  const buffer = iteratorToBuffer(out);
+
+  for await (const block of file.blocks()) {
+    await carWriter.put(block);
+  }
+
+  await carWriter.close();
 
   const request = new Request(
     new URL(import.meta.env.VITE_API_URL) + "v1/storeCar",
@@ -40,18 +47,9 @@ export async function storeCar(file: CarReader): Promise<CID> {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/vnd.ipld.car",
       },
-      body: iteratorToStream(out),
-
-      // @ts-ignore
-      duplex: "half",
+      body: await buffer,
     }
   );
-
-  for await (const block of file.blocks()) {
-    await carWriter.put(block);
-  }
-
-  await carWriter.close();
 
   const response = await fetch(request);
 
