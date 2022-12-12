@@ -75,6 +75,7 @@ onMounted(async () => {
           router-link.rounded-full.bg-gradient-to-r.from-red-500.to-orange-500.p-1.px-3.text-white.shadow.transition(
             :to="'/' + profileAccount.ensName.value"
             class="active:scale-95 active:shadow-none"
+            @click="emit('exit')"
           ) {{ profileAccount.ensName.value }}
 
       button.rounded-lg.p-2.transition(
