@@ -3,7 +3,7 @@ import JobVue, { Kind as JobVueKind } from "@/components/Job.vue";
 import { onMounted, ref, type ShallowRef } from "vue";
 import * as api from "@/services/api";
 import { Job } from "@/models/Job";
-import { Account } from "supa-app/models/Account";
+import { Account } from "@fancysofthq/supa-app/models/Account";
 import { CID } from "multiformats/cid";
 import nProgress from "nprogress";
 import {
@@ -12,7 +12,7 @@ import {
   DocumentDuplicateIcon,
 } from "@heroicons/vue/24/outline";
 import Spinner from "@/components/shared/Spinner.vue";
-import { displayCid } from "supa-app/services/ipfs";
+import { displayCid } from "@fancysofthq/supa-app/services/ipfs";
 import { useClipboard } from "@vueuse/core";
 const { copy, copied } = useClipboard();
 

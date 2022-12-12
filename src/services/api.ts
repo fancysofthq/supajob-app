@@ -1,9 +1,9 @@
 import { CID } from "multiformats/cid";
-import * as Web3Auth from "supa-app/services/Web3Auth";
-import { useEth } from "supa-app/services/eth";
+import * as Web3Auth from "@fancysofthq/supa-app/services/Web3Auth";
+import { useEth } from "@fancysofthq/supa-app/services/eth";
 import { CarReader, CarWriter } from "@ipld/car";
-import { iteratorToStream } from "supa-app/utils/stream";
-import { Address } from "supa-app/services/eth/Address";
+import { iteratorToStream } from "@fancysofthq/supa-app/utils/stream";
+import { Address } from "@fancysofthq/supa-app/services/eth/Address";
 
 export async function storeCar(file: CarReader): Promise<CID> {
   const { provider, account } = useEth();

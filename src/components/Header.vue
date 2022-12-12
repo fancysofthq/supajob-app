@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { WalletIcon } from "@heroicons/vue/24/outline";
-import { useEth } from "supa-app/services/eth";
+import { useEth } from "@fancysofthq/supa-app/services/eth";
 import Profile from "./modals/Profile.vue";
 import Mint from "./modals/Mint.vue";
 import { ref } from "vue";
 import Spinner from "./shared/Spinner.vue";
-import Chip from "supa-app/components/Chip.vue";
+import Chip from "@fancysofthq/supa-app/components/Chip.vue";
 
 const { account, isConnecting, disconnect } = useEth();
 

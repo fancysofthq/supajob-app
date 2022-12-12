@@ -2,11 +2,11 @@
 import { onMounted, ref, type ShallowRef } from "vue";
 import * as api from "@/services/api";
 import { Job } from "@/models/Job";
-import { Account } from "supa-app/models/Account";
+import { Account } from "@fancysofthq/supa-app/models/Account";
 import JobVue, { Kind as JobVueKind } from "@/components/Job.vue";
 import Spinner from "@/components/shared/Spinner.vue";
 import nProgress from "nprogress";
-import { sleep } from "supa-app/utils/aux";
+import { sleep } from "@fancysofthq/supa-app/utils/aux";
 
 const jobs: ShallowRef<Job[]> = ref([]);
 const fetchInProgress = ref(true);

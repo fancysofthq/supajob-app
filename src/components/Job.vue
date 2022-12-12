@@ -7,8 +7,8 @@ export enum Kind {
 
 <script setup lang="ts">
 import Markdown from "vue3-markdown-it";
-import Placeholder from "supa-app/components/Placeholder.vue";
-import Chip from "supa-app/components/Chip.vue";
+import Placeholder from "@fancysofthq/supa-app/components/Placeholder.vue";
+import Chip from "@fancysofthq/supa-app/components/Chip.vue";
 import { Job } from "@/models/Job";
 import { BanknotesIcon, MapPinIcon } from "@heroicons/vue/24/outline";
 

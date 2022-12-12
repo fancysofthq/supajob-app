@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "ipft/src/contracts/IPFT.sol";
+import "@nxsf/ipft/src/contracts/IPFT.sol";
 
 contract JobBoard is
     ERC1155,

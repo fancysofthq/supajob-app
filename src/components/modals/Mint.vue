@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Account } from "supa-app/models/Account";
+import type { Account } from "@fancysofthq/supa-app/models/Account";
 import {
   XMarkIcon,
   PhotoIcon,
@@ -15,17 +15,17 @@ import {
   type Ref,
   type ShallowRef,
 } from "vue";
-import TagInput from "supa-app/components/TagInput.vue";
-import FilePicker from "supa-app/components/FilePicker.vue";
+import TagInput from "@fancysofthq/supa-app/components/TagInput.vue";
+import FilePicker from "@fancysofthq/supa-app/components/FilePicker.vue";
 import { jobBoardContract } from "@/services/eth";
 import { ethers, type BigNumber } from "ethers";
 import { Job, type Metadata } from "@/models/Job";
 import JobVue, { Kind as JobVueKind } from "@/components/Job.vue";
-import { packIpft } from "supa-app/services/Web3Storage";
-import * as IPFT from "supa-app/services/eth/IPFT";
-import { useEth } from "supa-app/services/eth";
-import { Address } from "supa-app/services/eth/Address";
-import { indexOfMulti } from "supa-app/utils/uint8";
+import { packIpft } from "@fancysofthq/supa-app/services/Web3Storage";
+import * as IPFT from "@fancysofthq/supa-app/services/eth/IPFT";
+import { useEth } from "@fancysofthq/supa-app/services/eth";
+import { Address } from "@fancysofthq/supa-app/services/eth/Address";
+import { indexOfMulti } from "@fancysofthq/supa-app/utils/uint8";
 import Spinner from "@/components/shared/Spinner.vue";
 import * as api from "@/services/api";
 import { CID } from "multiformats/cid";

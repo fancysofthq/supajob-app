@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Account } from "supa-app/models/Account";
+import type { Account } from "@fancysofthq/supa-app/models/Account";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 import CommonVue from "./Common.vue";
 import ProfileVue from "@/pages/Profile.vue";

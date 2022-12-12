@@ -6,13 +6,13 @@ import {
   ClipboardDocumentCheckIcon,
 } from "@heroicons/vue/24/outline";
 import { useClipboard } from "@vueuse/core";
-import { Account } from "supa-app/models/Account";
-import { notNull } from "supa-app/utils/aux";
+import { Account } from "@fancysofthq/supa-app/models/Account";
+import { notNull } from "@fancysofthq/supa-app/utils/aux";
 import { computed, onMounted, ref, type ShallowRef } from "vue";
 import * as api from "@/services/api";
 import JobVue, { Kind as JobVueKind } from "@/components/Job.vue";
-import PFP from "supa-app/components/PFP.vue";
-import { useEth } from "supa-app/services/eth";
+import PFP from "@fancysofthq/supa-app/components/PFP.vue";
+import { useEth } from "@fancysofthq/supa-app/services/eth";
 
 const { account: connectedAccount, disconnect } = useEth();
 const { copy, copied } = useClipboard();

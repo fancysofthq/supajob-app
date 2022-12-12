@@ -1,12 +1,12 @@
-import { Blockifiable } from "supa-app/services/Web3Storage";
+import { Blockifiable } from "@fancysofthq/supa-app/services/Web3Storage";
 import { CID } from "multiformats/cid";
 import { encode as encodeBlock, Block } from "multiformats/block";
 import * as raw from "multiformats/codecs/raw";
 import { sha256 } from "multiformats/hashes/sha2";
-import { toIpfsUri, gatewayize } from "supa-app/services/ipfs";
+import { toIpfsUri, gatewayize } from "@fancysofthq/supa-app/services/ipfs";
 import * as dagCbor from "@ipld/dag-cbor";
 import { markRaw, ref, ShallowRef } from "vue";
-import { Account } from "supa-app/models/Account";
+import { Account } from "@fancysofthq/supa-app/models/Account";
 import { nanoid } from "nanoid";
 
 export type Metadata = {

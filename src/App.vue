@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import HeaderVue from "./components/Header.vue";
-import { useEth } from "supa-app/services/eth";
+import { useEth } from "@fancysofthq/supa-app/services/eth";
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import nProgress from "nprogress";

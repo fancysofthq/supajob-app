@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import { CID } from "multiformats/cid";
-import { Account } from "supa-app/models/Account";
+import { Account } from "@fancysofthq/supa-app/models/Account";
 
 const Home = () => import("./pages/Home.vue");
 const Job = () => import("./pages/Job.vue");
