@@ -24,7 +24,7 @@ module.exports = {
     },
     mumbai: {
       url: "https://rpc-mumbai.maticvigil.com",
-      accounts: [process.env.PRIVATE_KEY],
+      accounts: [process.env.ETH_PRIVATE_KEY],
     },
   },
   etherscan: {
