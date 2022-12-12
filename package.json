@@ -11,14 +11,14 @@
     "contracts:deploy": "hardhat run src/scripts/contracts/deploy.js"
   },
   "dependencies": {
-    "@fancysofthq/supa-app": "^0.2.0",
+    "@fancysofthq/supa-app": "^0.2.1",
     "@headlessui/vue": "^1.7.4",
     "@heroicons/vue": "^2.0.13",
     "@ipld/car": "^5.0.1",
     "@ipld/dag-cbor": "^8.0.0",
     "@ipld/dag-pb": "^3.0.1",
     "@ipld/unixfs": "^2.0.0",
-    "@nxsf/ipft": "^0.1.2",
+    "@nxsf/ipft": "^0.1.3",
     "@types/nprogress": "^0.2.0",
     "@vueuse/components": "^9.6.0",
     "@vueuse/core": "^9.6.0",
