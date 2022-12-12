@@ -88,13 +88,17 @@ onMounted(async () => {
   template(v-if="jobs.length")
     h2.ml-3.font-semibold Jobs minted
     .flex.flex-col.gap-2
-      JobVue.cursor-pointer.rounded-lg.border.border-white.bg-white.p-3.shadow.transition(
-        v-for="job of jobs"
-        class="hover:border-slate-200 active:scale-95 active:shadow-none"
-        :job="job"
-        :kind="JobVueKind.Card"
-        @visit="emit('exit')"
-        @click.exact="() => { emit('exit'); $router.push('/job/' + job.cid.toString()); }"
+      router-link(
+        v-for="job in jobs"
+        :to="'/job/' + job.cid.toString()"
+        @click.exact="emit('exit')"
+        :key="job.cid.toString()"
       )
+        JobVue.cursor-pointer.rounded-lg.border.border-white.bg-white.p-3.shadow.transition(
+          class="hover:border-slate-200 active:scale-95 active:shadow-none"
+          :job="job"
+          :kind="JobVueKind.Card"
+          @visit="emit('exit')"
+        )
   p.ml-4(v-else) {{  isSelf ? "You haven't minted any jobs yet." : "This account hasn't minted any jobs yet."  }}
 </template>

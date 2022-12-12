@@ -28,7 +28,6 @@ onMounted(async () => {
 });
 </script>
 
-<!-- TODO: Full router-link -->
 <template lang="pug">
 .flex.w-full.max-w-2xl.flex-col.gap-3
   .prose.flex.flex-col.rounded-xl.bg-gradient-to-br.from-emerald-500.to-amber-300.bg-fixed.p-4.text-white
@@ -46,11 +45,10 @@ onMounted(async () => {
   template(v-if="fetchInProgress")
     Spinner.h-6.w-6.fill-white.text-slate-300
   template(v-else)
-    JobVue.cursor-pointer.rounded-xl.border.border-white.bg-white.p-3.shadow-lg.transition(
-      v-for="job in jobs"
-      :job="job"
-      :kind="JobVueKind.Card"
-      @click.exact="() => $router.push('/job/' + job.cid.toString())"
-      class="hover:border-slate-200 active:scale-95 active:shadow-none"
-    )
+    router-link(:to="'/job/' + job.cid.toString()" v-for="job in jobs")
+      JobVue.cursor-pointer.rounded-xl.border.border-white.bg-white.p-3.shadow-lg.transition(
+        :job="job"
+        :kind="JobVueKind.Card"
+        class="hover:border-slate-200 active:scale-95 active:shadow-none"
+      )
 </template>

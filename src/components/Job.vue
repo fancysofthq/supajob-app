@@ -76,7 +76,7 @@ const emit = defineEmits(["visit"]);
       )
         a.contents(
           :href="href"
-          @click.stop="() => { navigate(); emit('visit'); }"
+          @click.exact.stop="() => { navigate(); emit('visit'); }"
         )
           Chip.cursor-pointer.gap-1.font-medium(
             class="hover:underline"
