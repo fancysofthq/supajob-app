@@ -13,6 +13,7 @@ import * as api from "@/services/api";
 import JobVue, { Kind as JobVueKind } from "@/components/Job.vue";
 import PFP from "@fancysofthq/supa-app/components/PFP.vue";
 import { useEth } from "@fancysofthq/supa-app/services/eth";
+import nProgress from "nprogress";
 
 const { account: connectedAccount, disconnect } = useEth();
 const { copy, copied } = useClipboard();
@@ -30,6 +31,7 @@ const isSelf = computed(() =>
 
 onMounted(async () => {
   const address = await props.profileAccount.resolveAddress();
+  nProgress.done();
 
   jobs.value = (await api.getJobsFrom(address)).map((job) =>
     Job.getOrCreate(job.cid, props.profileAccount, job.block, true)
