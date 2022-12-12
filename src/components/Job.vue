@@ -96,7 +96,7 @@ const emit = defineEmits(["visit"]);
 
 <style lang="scss">
 .prose {
-  @apply flex flex-col gap-1;
+  @apply flex flex-col gap-1 leading-tight;
 
   h1 {
     @apply text-2xl font-bold;

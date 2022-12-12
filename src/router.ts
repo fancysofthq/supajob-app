@@ -12,7 +12,7 @@ const router = createRouter({
     {
       path: "/",
       component: Home,
-      meta: { name: "Home" },
+      meta: { name: "Home", doNotTerminateNProgress: true },
     },
     {
       path: "/job/:cid",
