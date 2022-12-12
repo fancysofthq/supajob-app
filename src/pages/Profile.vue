@@ -53,19 +53,29 @@ onMounted(async () => {
   .flex.flex-col.gap-2.rounded-xl.bg-gradient-to-r.from-purple-500.to-pink-500.p-4
     .flex.items-center.justify-between
       .flex.items-center.gap-1
-        router-link.group.contents(
+        router-link.contents(
           :to="'/' + profileAccount.ensNameOrAddress()"
           @click="emit('exit')"
         )
-          PFP.mr-1.h-12.w-12.rounded-full.bg-white(:account="profileAccount")
-          .rounded-lg.p-2.text-white(class="bg-black/10 group-hover:underline")
-            span.select-none {{ profileAccount.ensName.value || profileAccount.address.value?.display() }}
+          PFP.mr-1.h-12.w-12.rounded-full.bg-white.shadow.transition(
+            :account="profileAccount"
+            class="active:scale-95 active:shadow-none"
+          )
+          .select-none.rounded-lg.p-2.px-3.text-white.transition(
+            class="bg-black/10 hover:bg-black/20 hover:underline active:scale-95"
+          ) {{ profileAccount.address.value?.display() }}
         button.rounded-lg.p-2.transition(
           class="hover:bg-black/20 active:scale-95"
           @click="copy(notNull(profileAccount.address.value).toString())"
         )
           DocumentDuplicateIcon.h-6.w-6.text-white(v-if="!copied")
           ClipboardDocumentCheckIcon.h-6.w-6.text-white(v-else)
+        .flex.items-center.gap-2.text-sm(v-if="profileAccount.ensName.value")
+          span.text-white aka
+          router-link.rounded-full.bg-gradient-to-r.from-red-500.to-orange-500.p-1.px-3.text-white.shadow.transition(
+            :to="'/' + profileAccount.ensName.value"
+            class="active:scale-95 active:shadow-none"
+          ) {{ profileAccount.ensName.value }}
 
       button.rounded-lg.p-2.transition(
         v-if="isSelf"
