@@ -106,7 +106,10 @@ async function mint() {
   if (!canMint.value) throw new Error("Cannot mint");
 
   mintButtonPressed.value = true;
+  mintError.value = undefined;
   minting.value = Status.InProgress;
+  uploading.value = undefined;
+  txConfirmation.value = undefined;
 
   const { provider } = useEth();
 
@@ -408,11 +411,14 @@ CommonVue(:open="open" @close="tryClose" panel-class="w-full max-w-5xl")
                       span Visit job page
                       ArrowTopRightOnSquareIcon.h-5.w-5
 
-            .flex.w-full.items-center.justify-center.gap-1.rounded-lg.bg-red-500.p-2.text-sm(
-              v-if="mintError"
-            )
-              XCircleIcon.inline-block.h-6.w-6.text-white
-              span.text-white {{ mintError }}
+            .flex.flex-col(v-if="mintError")
+              .flex.w-full.items-center.justify-center.gap-1.rounded-lg.bg-red-500.p-2.text-sm
+                XCircleIcon.inline-block.h-6.w-6.text-white
+                span.text-white {{ mintError }}
+                button.ml-1.rounded.bg-white.px-2.py-1.text-xs.text-red-800.shadow-sm.transition(
+                  @click="mint"
+                  class="active:scale-95 active:shadow-none"
+                ) Try again
 </template>
 
 <style lang="scss">
