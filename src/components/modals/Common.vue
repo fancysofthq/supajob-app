@@ -36,7 +36,7 @@ TransitionRoot(:show="open" as="template")
     //- Full-screen scrollable content
     .fixed.inset-0.overflow-y-auto
       //- Container to center the panel
-      .flex.min-h-full.items-center.justify-center.p-4
+      .flex.min-h-full.items-center.justify-center
         TransitionChild(
           as="template"
           enter="ease-in-out duration-300 transform"
@@ -46,8 +46,9 @@ TransitionRoot(:show="open" as="template")
           leave-from="translate-y-0 opacity-100"
           leave-to="translate-y-full opacity-0"
         )
-          DialogPanel.flex.flex-col.gap-2.rounded-lg.bg-white.p-4.shadow-lg.transition(
+          DialogPanel.flex.flex-col.gap-2.rounded-xl.bg-slate-100.p-4.shadow-lg.transition(
             :class="panelClass"
+            class="sm:p-8"
           )
             DialogTitle.flex.justify-between
               slot(name="title")

@@ -107,3 +107,21 @@ export async function getJob(cid: CID): Promise<Job | undefined> {
     block: job.block,
   };
 }
+
+export async function getJobsFrom(address: Address): Promise<Job[]> {
+  const response = await fetch(
+    new URL(import.meta.env.VITE_API_URL) + `v1/jobs?from=${address}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to get jobs");
+  }
+
+  return (await response.json()).map(
+    (job: JobDto): Job => ({
+      cid: CID.parse(job.cid),
+      author: new Address(job.author),
+      block: job.block,
+    })
+  );
+}

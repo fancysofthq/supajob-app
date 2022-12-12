@@ -20,7 +20,7 @@ import FilePicker from "supa-app/components/FilePicker.vue";
 import { jobBoardContract } from "@/services/eth";
 import { ethers, type BigNumber } from "ethers";
 import { Job, type Metadata } from "@/models/Job";
-import JobVue from "@/components/Job.vue";
+import JobVue, { Kind as JobVueKind } from "@/components/Job.vue";
 import { packIpft } from "supa-app/services/Web3Storage";
 import * as IPFT from "supa-app/services/eth/IPFT";
 import { useEth } from "supa-app/services/eth";
@@ -66,6 +66,13 @@ const uploading: Ref<Status | undefined> = ref();
 const txConfirmation: Ref<Status | undefined> = ref();
 
 const mintButtonPressed = ref(false);
+
+const inProgress = computed(
+  () =>
+    minting.value === Status.InProgress ||
+    uploading.value === Status.InProgress ||
+    txConfirmation.value === Status.InProgress
+);
 
 const isComplete = computed(
   () =>
@@ -200,6 +207,32 @@ async function mint() {
   }
 }
 
+function cleanup(): boolean {
+  if (inProgress.value) return false;
+  if (isComplete.value) return true;
+  // TODO: Confirmation digalog
+
+  minting.value = undefined;
+  uploading.value = undefined;
+  txConfirmation.value = undefined;
+  mintError.value = undefined;
+  mintButtonPressed.value = false;
+
+  name.value = "";
+  description.value = "";
+  tags.value = [];
+  payment.value = "";
+  location.value = "";
+  content.value = "";
+  previewImage.value = undefined;
+
+  return true;
+}
+
+function tryClose(): void | null {
+  cleanup() ? emit("close") : null;
+}
+
 watchDebounced(
   jobBoardContract,
   async (contract) => {
@@ -211,15 +244,15 @@ watchDebounced(
 </script>
 
 <template lang="pug">
-CommonVue(:open="open" @close="emit('close')" panel-class="w-full max-w-5xl")
+CommonVue(:open="open" @close="tryClose" panel-class="w-full max-w-5xl")
   template(#title)
     span.text-lg.font-bold Mint a Job
-    button(@click="emit('close')")
+    button.opacity-10.transition-opacity(@click="tryClose" class="hover:opacity-100")
       XMarkIcon.h-6.w-6
 
   template(#description)
     .grid.grid-cols-1.gap-y-3(class="sm:grid-cols-5 sm:gap-x-3")
-      form.relative.col-span-2.flex.flex-col.divide-y.rounded-xl.border(
+      form.relative.col-span-2.flex.flex-col.divide-y.rounded-xl.border.bg-white(
         :class="{ 'opacity-50': mintButtonPressed }"
       )
         .absolute.z-20.-ml-1.-mt-1.flex.h-8.w-8.items-center.justify-center.rounded-full.border.bg-white.text-lg.font-bold 1
@@ -266,7 +299,7 @@ CommonVue(:open="open" @close="emit('close')" panel-class="w-full max-w-5xl")
               XMarkIcon.h-4.w-4
 
         .p-2
-          textarea.w-full.rounded.border-none.p-0(
+          textarea.w-full.rounded.border-none.p-0.text-sm(
             :disabled="mintButtonPressed"
             class="hover:bg-slate-100 focus:bg-slate-100"
             placeholder="Short description*"
@@ -303,9 +336,12 @@ CommonVue(:open="open" @close="emit('close')" panel-class="w-full max-w-5xl")
       .col-span-3.flex.flex-col.gap-3
         .relative.flex.flex-col
           .absolute.z-20.-ml-1.-mt-1.flex.h-8.w-8.items-center.justify-center.rounded-full.border.bg-white.text-lg.font-bold 2
-          JobVue.rounded-xl.border.p-3(:job="job" :show-content="true")
+          JobVue.rounded-xl.border.bg-white.p-3(
+            :job="job"
+            :kind="JobVueKind.Full"
+          )
 
-        .relative.flex.flex-col.gap-3.rounded-xl.border
+        .relative.flex.flex-col.gap-3.rounded-xl.border.bg-white
           .absolute.z-20.-ml-1.-mt-1.flex.h-8.w-8.items-center.justify-center.rounded-full.border.bg-white.text-lg.font-bold 3
 
           .flex.flex-col.gap-2.p-3
@@ -381,37 +417,5 @@ CommonVue(:open="open" @close="emit('close')" panel-class="w-full max-w-5xl")
 <style lang="scss">
 .tag-input .tag {
   @apply rounded-full border;
-}
-
-.prose {
-  @apply flex flex-col gap-1;
-
-  h1 {
-    @apply text-2xl font-bold;
-  }
-
-  h2 {
-    @apply text-xl font-bold;
-  }
-
-  h3 {
-    @apply text-lg font-bold;
-  }
-
-  h4 {
-    @apply text-base font-bold;
-  }
-
-  h5 {
-    @apply text-sm font-bold;
-  }
-
-  h6 {
-    @apply text-xs font-bold;
-  }
-
-  blockquote {
-    @apply my-1 border-l-4 pl-2;
-  }
 }
 </style>

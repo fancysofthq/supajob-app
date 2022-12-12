@@ -1,0 +1,89 @@
+<script setup lang="ts">
+import { Job } from "@/models/Job";
+import {
+  ArrowRightOnRectangleIcon,
+  DocumentDuplicateIcon,
+  ClipboardDocumentCheckIcon,
+} from "@heroicons/vue/24/outline";
+import { useClipboard } from "@vueuse/core";
+import { Account } from "supa-app/models/Account";
+import { notNull } from "supa-app/utils/aux";
+import { computed, onMounted, ref, type ShallowRef } from "vue";
+import * as api from "@/services/api";
+import JobVue, { Kind as JobVueKind } from "@/components/Job.vue";
+import PFP from "supa-app/components/PFP.vue";
+import { useEth } from "supa-app/services/eth";
+
+const { account: connectedAccount } = useEth();
+const { copy, copied } = useClipboard();
+
+const props = defineProps<{ profileAccount: Account; displayTitle: boolean }>();
+const emit = defineEmits(["disconnect", "exit"]);
+
+const jobs: ShallowRef<Job[]> = ref([]);
+
+const isSelf = computed(() =>
+  connectedAccount.value?.address.value?.equals(
+    props.profileAccount.address.value
+  )
+);
+
+onMounted(async () => {
+  const address = await props.profileAccount.resolveAddress();
+
+  jobs.value = (await api.getJobsFrom(address)).map((job) =>
+    Job.getOrCreate(job.cid, props.profileAccount, job.block, true)
+  );
+});
+</script>
+
+<template lang="pug">
+.flex.w-full.max-w-2xl.flex-col.gap-2
+  .flex.items-baseline.gap-1(v-if="displayTitle")
+    h2.ml-4.text-lg.font-semibold Account
+    router-link.hidden.text-sm.text-slate-400(
+      :to="'/' + profileAccount.ensNameOrAddress()"
+      class="hover:text-inherit hover:underline sm:block"
+    ) {{ profileAccount.ensNameOrAddress() }}
+    router-link.text-sm.text-slate-400(
+      :to="'/' + profileAccount.ensNameOrAddress()"
+      class="hover:text-inherit hover:underline sm:hidden"
+    ) {{ profileAccount.ensNameOrAddress(true) }}
+
+  .flex.flex-col.gap-2.rounded-xl.bg-gradient-to-r.from-purple-500.to-pink-500.p-4
+    .flex.items-center.justify-between
+      .flex.items-center.gap-1
+        router-link.group.contents(
+          :to="'/' + profileAccount.ensNameOrAddress()"
+          @click="emit('exit')"
+        )
+          PFP.mr-1.h-12.w-12.rounded-full.bg-white(:account="profileAccount")
+          .rounded-lg.p-2.text-white(class="bg-black/10 group-hover:underline")
+            span.select-none {{ profileAccount.ensName.value || profileAccount.address.value?.display() }}
+        button.rounded-lg.p-2.transition(
+          class="hover:bg-black/20 active:scale-95"
+          @click="copy(notNull(profileAccount.address.value).toString())"
+        )
+          DocumentDuplicateIcon.h-6.w-6.text-white(v-if="!copied")
+          ClipboardDocumentCheckIcon.h-6.w-6.text-white(v-else)
+
+      button.rounded-lg.p-2.transition(
+        v-if="isSelf"
+        @click="emit('disconnect')"
+        class="hover:bg-black/20 active:scale-95"
+      )
+        ArrowRightOnRectangleIcon.h-6.w-6.text-white
+
+  template(v-if="jobs.length")
+    h2.ml-3.font-semibold Jobs minted
+    .flex.flex-col.gap-2
+      JobVue.cursor-pointer.rounded-lg.border.border-white.bg-white.p-3.shadow.transition(
+        v-for="job of jobs"
+        class="hover:border-slate-200 active:scale-95 active:shadow-none"
+        :job="job"
+        :kind="JobVueKind.Card"
+        @visit="emit('exit')"
+        @click.exact="() => { emit('exit'); $router.push('/job/' + job.cid.toString()); }"
+      )
+  p.ml-4(v-else) {{  isSelf ? "You haven't minted any jobs yet." : "This account hasn't minted any jobs yet."  }}
+</template>

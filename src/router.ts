@@ -1,9 +1,10 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import { CID } from "multiformats/cid";
-import * as api from "@/services/api";
+import { Account } from "supa-app/models/Account";
 
 const Home = () => import("./pages/Home.vue");
 const Job = () => import("./pages/Job.vue");
+const Profile = () => import("./pages/Profile.vue");
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -11,19 +12,39 @@ const router = createRouter({
     {
       path: "/",
       component: Home,
+      meta: { name: "Home" },
     },
     {
       path: "/job/:cid",
       component: Job,
       meta: {
-        dto: null,
+        name: "Job",
+        doNotTerminateNProgress: true,
       },
       props: (route) => ({
-        dto: route.meta.dto,
+        cid: CID.parse(route.params.cid as string),
       }),
-      beforeEnter: async (to, from, next) => {
-        to.meta.dto = await api.getJob(CID.parse(to.params.cid as string));
-        next();
+    },
+    {
+      path: "/:name(\\w+\\.eth|0x[0-9a-fA-F]{40})",
+      component: Profile,
+      meta: { name: "Profile" },
+      props: (route) => {
+        if ((route.params.name as string).endsWith(".eth")) {
+          return {
+            profileAccount: Account.getOrCreateFromEnsName(
+              route.params.name as string
+            ),
+            displayTitle: true,
+          };
+        } else {
+          return {
+            profileAccount: Account.getOrCreateFromAddress(
+              route.params.name as string
+            ),
+            displayTitle: true,
+          };
+        }
       },
     },
   ],
