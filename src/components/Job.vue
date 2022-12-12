@@ -127,7 +127,7 @@ const emit = defineEmits(["visit"]);
   }
 
   a {
-    @apply inline-block;
+    @apply inline-block underline;
   }
 
   pre {
