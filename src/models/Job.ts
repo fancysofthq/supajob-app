@@ -7,6 +7,7 @@ import { toIpfsUri, gatewayize } from "supa-app/services/ipfs";
 import * as dagCbor from "@ipld/dag-cbor";
 import { markRaw, ref, ShallowRef } from "vue";
 import { Account } from "supa-app/models/Account";
+import { nanoid } from "nanoid";
 
 export type Metadata = {
   name: string;
@@ -80,8 +81,11 @@ export class Job implements Blockifiable {
       hasher: sha256,
     });
 
+    const imageName =
+      nanoid() + "." + this.metadata.value.image.name.split(".").pop();
+
     const rootByteView = await encodeBlock({
-      value: { [this.metadata.value.image.name]: imgBlock.cid },
+      value: { [imageName]: imgBlock.cid },
       codec: dagCbor,
       hasher: sha256,
     });
@@ -93,8 +97,7 @@ export class Job implements Blockifiable {
     });
 
     const json: Metadata = JSON.parse(JSON.stringify(this.metadata.value));
-    json.image =
-      toIpfsUri(rootByteView.cid as CID) + this.metadata.value.image.name;
+    json.image = toIpfsUri(rootByteView.cid as CID) + imageName;
 
     return { json, block };
   }

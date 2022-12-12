@@ -24,6 +24,7 @@
     "ethers": "^5.7.2",
     "ipft": "^1.0.0",
     "multiformats": "^10.0.2",
+    "nanoid": "^4.0.0",
     "nprogress": "^0.2.0",
     "supa-app": "^0.0.0",
     "vue": "^3.2.41",

@@ -258,7 +258,7 @@ CommonVue(:open="open" @close="tryClose" panel-class="w-full max-w-5xl")
         .absolute.z-20.-ml-1.-mt-1.flex.h-8.w-8.items-center.justify-center.rounded-full.border.bg-white.text-lg.font-bold 1
 
         FilePicker.bg-checkerboard.flex.h-48.items-center.justify-center.overflow-hidden.rounded-t-lg.border-none(
-          accept="image/*"
+          accept="image/jpg,image/jpeg"
           v-model:image="previewImage"
           :file="previewImage"
           @update:file="previewImage = $event"
