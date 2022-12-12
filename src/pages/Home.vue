@@ -38,6 +38,10 @@ onMounted(async () => {
       | The site is still in β, so please report any bugs or suggestions to&nbsp;
       a.font-medium(href="https://twitter.com/vladfaust" class="hover:underline") @vladfaust
       | &nbsp;on Twitter.
+    p.text-sm
+      | ⚠️ Web3.Storage, the IPFS pinning provider, is currently&nbsp;
+      a.underline(href="https://status.web3.storage/incidents/759t97vdwg4x") experiencing outages in services
+      | ; content may be unavailable for a while.
 
   template(v-if="fetchInProgress")
     Spinner.h-6.w-6.fill-white.text-slate-300
