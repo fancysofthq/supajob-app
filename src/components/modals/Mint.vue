@@ -400,9 +400,10 @@ CommonVue(:open="open" @close="tryClose" panel-class="w-full max-w-5xl")
                   span.font-medium Waiting for tx confirmation
                 .mt-2.w-full(v-if="isComplete")
                   .flex.w-full.justify-center.rounded-lg.border-2.border-white.p-1.text-sm.font-medium
-                    router-link.flex.cursor-pointer.gap-1(
-                      class="hover:underline"
+                    router-link.flex.cursor-pointer.gap-1.transition-transform(
+                      class="hover:underline active:scale-95"
                       :to="'/job/' + jobCid"
+                      @click="tryClose"
                     )
                       span Visit job page
                       ArrowTopRightOnSquareIcon.h-5.w-5
