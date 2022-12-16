@@ -5,10 +5,13 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@nxsf/ipft/src/contracts/IPFT.sol";
+
+import "@nxsf/ipft/contracts/LibIPFT.sol";
+import "@nxsf/ipft/contracts/IIPFT.sol";
 
 contract JobBoard is
     ERC1155,
+    IIPFT,
     Ownable,
     ERC1155Burnable,
     ERC1155Supply
@@ -34,13 +37,29 @@ contract JobBoard is
 
     event Promote(uint256 indexed id, uint256 value, bytes metadata);
 
-    mapping (uint256 => address) public authorOf;
-    mapping (uint256 => uint32) public codec;
+    mapping (uint256 => address) _author;
+    mapping (uint256 => uint32) _multicodec;
 
     uint256 public mintPrice;
 
     constructor(uint256 _mintPrice) ERC1155("") {
       mintPrice = _mintPrice;
+    }
+
+    function authorOf(uint256 tokenId) public view override(IIPFT) returns (address) {
+        return _author[tokenId];
+    }
+
+    function multicodecOf(uint256 tokenId) public view override(IIPFT) returns (uint32) {
+        return _multicodec[tokenId];
+    }
+
+    function multihashOf(uint256) public pure override(IIPFT) returns (uint32) {
+        return 0x1b;
+    }
+
+    function digestSizeOf(uint256) public pure override(IIPFT) returns (uint32) {
+        return 32;
     }
 
     function mintFresh(
@@ -52,27 +71,28 @@ contract JobBoard is
     ) public payable {
         _requireAuth(ipft.author);
 
-        require(authorOf[id] == address(0), "JobBoard: already authored");
+        require(_author[id] == address(0), "JobBoard: already authored");
         require(amount > 0, "JobBoard: amount must be greater than 0");
         require(msg.value >= mintPrice * amount, "JobBoard: insufficient value");
 
-        uint256 hash = uint256(
-            IPFT.verifyTag(
-                ipft.content,
-                ipft.tagOffset,
-                address(this),
-                ipft.author
-            )
+        LibIPFT.verifyTag(
+            ipft.content,
+            ipft.tagOffset,
+            address(this),
+            ipft.author
         );
 
         // Check the content hash against the token ID.
-        require(hash == id, "IPFT(721): content hash mismatch");
+        require(
+            uint256(keccak256(ipft.content)) == id,
+            "IPFT(721): content hash mismatch"
+        );
 
         // Set token author.
-        authorOf[id] = ipft.author;
+        _author[id] = ipft.author;
 
         // Set token codec.
-        codec[id] = ipft.codec;
+        _multicodec[id] = ipft.codec;
 
         // Mint the token.
         _mint(to, id, amount, data);
@@ -85,7 +105,7 @@ contract JobBoard is
         uint256 amount,
         bytes calldata data
     ) public payable {
-        _requireAuth(authorOf[id]);
+        _requireAuth(_author[id]);
 
         require(amount > 0, "JobBoard: amount must be greater than 0");
         require(msg.value >= mintPrice * amount, "JobBoard: insufficient value");
@@ -98,16 +118,16 @@ contract JobBoard is
         uint256 id,
         bytes calldata metadata
     ) public payable {
-        _requireAuth(authorOf[id]);
+        _requireAuth(_author[id]);
         require(msg.value >= 0, "JobBoard: zero value");
         emit Promote(id, msg.value, metadata);
     }
 
-    /// Return {IPFT.uri} + "/metadata.json".
+    /// Return {LibIPFT.uri} + "/metadata.json".
     function uri(
         uint256 id
     ) public view override(ERC1155) returns (string memory) {
-        return string.concat(IPFT.uri(codec[id]), "/metadata.json");
+        return string.concat(LibIPFT.uri(multicodecOf(id), multihashOf(id), digestSizeOf(id)), "/metadata.json");
     }
 
     /// @dev Set the mint price.
@@ -139,7 +159,7 @@ contract JobBoard is
         // If neither minting or burning, check that the token is not soulbound.
         if (from != address(0) && to != address(0)) {
             for (uint256 i = 0; i < ids.length; i++) {
-                require(from == authorOf[ids[i]], "JobBoard: soulbound");
+                require(from == _author[ids[i]], "JobBoard: soulbound");
             }
         }
 

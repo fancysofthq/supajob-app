@@ -1,13 +1,13 @@
-import { Blockifiable } from "@fancysofthq/supa-app/services/Web3Storage";
+import {
+  Blockifiable,
+  Blockstore,
+} from "@fancysofthq/supa-app/services/Web3Storage";
 import { CID } from "multiformats/cid";
-import { encode as encodeBlock, Block } from "multiformats/block";
-import * as raw from "multiformats/codecs/raw";
-import { sha256 } from "multiformats/hashes/sha2";
+import { Block } from "multiformats/block";
 import { toIpfsUri, gatewayize } from "@fancysofthq/supa-app/services/ipfs";
-import * as dagCbor from "@ipld/dag-cbor";
 import { markRaw, ref, ShallowRef } from "vue";
 import { Account } from "@fancysofthq/supa-app/models/Account";
-import { nanoid } from "nanoid";
+import * as UnixFS from "@ipld/unixfs";
 
 export type Metadata = {
   name: string;
@@ -20,6 +20,19 @@ export type Metadata = {
     location: string;
   };
 };
+
+async function read<T>(readable: ReadableStream<T>): Promise<T[]> {
+  const chunks: T[] = [];
+  const reader = readable.getReader();
+  let { done, value } = await reader.read();
+
+  while (!done) {
+    chunks.push(value!);
+    ({ done, value } = await reader.read());
+  }
+
+  return chunks;
+}
 
 export class Job implements Blockifiable {
   static memo = new Map<string, Job>();
@@ -68,37 +81,39 @@ export class Job implements Blockifiable {
 
   async blockify(): Promise<{
     json: Metadata;
-    block: Block<unknown, 113, 18, 1>;
+    blockstore: Blockstore;
   }> {
     if (!this.metadata.value) throw new Error("Expected metadata to be set");
 
     if (!(this.metadata.value.image instanceof File))
       throw new Error("Expected image to be a File");
 
-    const imgBlock = await encodeBlock({
-      value: new Uint8Array(await this.metadata.value.image.arrayBuffer()),
-      codec: raw,
-      hasher: sha256,
-    });
+    const { readable, writable } = new TransformStream();
+    const writer = UnixFS.createWriter({ writable });
+    const rawBlocks = read<{ cid: CID; bytes: Uint8Array }>(readable);
 
-    const imageName =
-      nanoid() + "." + this.metadata.value.image.name.split(".").pop();
+    const imgFile = UnixFS.createFileWriter(writer);
+    imgFile.write(
+      new Uint8Array(await this.metadata.value.image.arrayBuffer())
+    );
+    const imgFileLink = await imgFile.close();
 
-    const rootByteView = await encodeBlock({
-      value: { [imageName]: imgBlock.cid },
-      codec: dagCbor,
-      hasher: sha256,
-    });
+    const dir = UnixFS.createDirectoryWriter(writer);
+    dir.set(this.metadata.value.image.name, imgFileLink);
+    const dirLink = await dir.close();
 
-    const block = new Block({
-      cid: rootByteView.cid,
-      bytes: rootByteView.bytes,
-      value: rootByteView.value,
-    });
+    await writer.close();
+
+    const blocks = (await rawBlocks).map(
+      (block) => new Block({ cid: block.cid, bytes: block.bytes, value: null })
+    );
 
     const json: Metadata = JSON.parse(JSON.stringify(this.metadata.value));
-    json.image = toIpfsUri(rootByteView.cid as CID) + imageName;
+    json.image = toIpfsUri(dirLink.cid as CID) + this.metadata.value.image.name;
 
-    return { json, block };
+    return {
+      json,
+      blockstore: new Blockstore(dirLink.cid as CID, blocks),
+    };
   }
 }

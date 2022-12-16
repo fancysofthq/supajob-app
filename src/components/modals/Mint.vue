@@ -131,7 +131,7 @@ async function mint() {
   );
 
   const blockstore = await packIpft(job.value, tag);
-  const cid = blockstore.root.cid;
+  const cid = blockstore.rootCid;
   jobCid.value = cid;
   console.debug("Root CID", cid.toString());
 
@@ -140,7 +140,7 @@ async function mint() {
   );
 
   if (currentAuthorOf.isZero()) {
-    const tagOffset = indexOfMulti(blockstore.root.bytes, tag.toBytes());
+    const tagOffset = indexOfMulti(blockstore.rootBlock.bytes, tag.toBytes());
     let tx;
 
     try {
@@ -148,7 +148,7 @@ async function mint() {
         {
           author: props.account.address.value!.toString(),
           codec: cid.code,
-          content: blockstore.root.bytes,
+          content: blockstore.rootBlock.bytes,
           tagOffset,
         },
         props.account.address.value!.toString(),

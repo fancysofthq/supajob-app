@@ -11,6 +11,13 @@ export async function storeCar(file: CarReader): Promise<CID> {
   const token = await Web3Auth.ensureAuth(
     provider.value!,
     `authjwt.${account.value!.address.value!.toString()}`,
+    {
+      expiresIn: "7d",
+      statement: "Please sign this message to authenticate with the API server",
+      domain: import.meta.env.DEV
+        ? undefined
+        : new URL(import.meta.env.VITE_API_URL).hostname,
+    },
     async (signature) => {
       const response = await fetch(
         new URL(import.meta.env.VITE_API_URL) + "v1/auth",

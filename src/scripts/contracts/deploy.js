@@ -32,7 +32,7 @@ async function main() {
     "JobBoard",
     {
       libraries: {
-        IPFT: process.env.IPFT_ADDRESS,
+        LibIPFT: process.env.LIB_IPFT_ADDRESS,
       },
     },
     ethers.utils.parseEther("0.0025")
