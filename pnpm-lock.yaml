@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@fancysoft/contracts': ^0.1.0-rc1
+  '@fancysoft/contracts': 0.1.0-rc3
   '@fancysofthq/supa-app': ^0.4.0-rc1
   '@headlessui/vue': ^1.7.4
   '@heroicons/vue': ^2.0.13
@@ -9,7 +9,7 @@ specifiers:
   '@ipld/dag-cbor': ^8.0.0
   '@ipld/dag-pb': ^3.0.1
   '@ipld/unixfs': ^2.0.0
-  '@nxsf/ipnft': ^0.4.0-rc5
+  '@nxsf/ipnft': 0.4.0-rc5
   '@prettier/plugin-pug': ^2.3.0
   '@tailwindcss/forms': ^0.5.3
   '@tailwindcss/line-clamp': ^0.4.2
@@ -39,7 +39,7 @@ specifiers:
   vue3-markdown-it: ^1.0.10
 
 dependencies:
-  '@fancysoft/contracts': 0.1.0-rc2
+  '@fancysoft/contracts': 0.1.0-rc3
   '@fancysofthq/supa-app': 0.4.0-rc1
   '@headlessui/vue': 1.7.6_vue@3.2.45
   '@heroicons/vue': 2.0.13_vue@3.2.45
@@ -436,8 +436,8 @@ packages:
       '@ethersproject/strings': 5.7.0
     dev: false
 
-  /@fancysoft/contracts/0.1.0-rc2:
-    resolution: {integrity: sha512-yy7qX01z50rjEa+7idBRNgodkutF6XTAkS+bdSxnTDeKpZYpBWy+gO3JOF3hSb/vL7aScxvMHM5FN4WyV+SH5Q==}
+  /@fancysoft/contracts/0.1.0-rc3:
+    resolution: {integrity: sha512-qXyao3UpPVimdGRs/xi0WtbRFipyaoT6O9RkR2Kh/oCqCr098ByCobNxYiqsF42DKdZtYLygobyXwb7AYMpYrw==}
     engines: {node: ^18.0}
     dependencies:
       '@ethersproject/abi': 5.7.0
