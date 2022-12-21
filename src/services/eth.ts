@@ -3,7 +3,7 @@ import { ref, Ref } from "vue";
 import {
   IPNFT721Soulbound,
   IPNFT721Soulbound__factory,
-} from "@fancysofthq/contracts/typechain";
+} from "@fancysoft/contracts/typechain";
 import { Address } from "@fancysofthq/supa-app/models/Bytes";
 const { onConnect } = useEth();
 
