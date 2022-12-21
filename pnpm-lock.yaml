@@ -21,6 +21,7 @@ specifiers:
   '@vueuse/core': ^9.6.0
   autoprefixer: ^10.4.13
   axios: ^1.2.1
+  buffer: ^6.0.3
   ethers: ^5.7.2
   multiformats: ^10.0.2
   nanoid: ^4.0.0
@@ -52,6 +53,7 @@ dependencies:
   '@vueuse/components': 9.6.0_vue@3.2.45
   '@vueuse/core': 9.6.0_vue@3.2.45
   axios: 1.2.1
+  buffer: 6.0.3
   ethers: 5.7.2
   multiformats: 10.0.2
   nanoid: 4.0.0
