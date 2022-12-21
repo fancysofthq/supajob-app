@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fancysoft/contracts": "0.1.0-rc3",
+    "@fancysoft/contracts": "^0.1.0",
     "@fancysofthq/supa-app": "^0.4.0-rc1",
     "@headlessui/vue": "^1.7.4",
     "@heroicons/vue": "^2.0.13",
@@ -17,7 +17,7 @@
     "@ipld/dag-cbor": "^8.0.0",
     "@ipld/dag-pb": "^3.0.1",
     "@ipld/unixfs": "^2.0.0",
-    "@nxsf/ipnft": "0.4.0-rc5",
+    "@nxsf/ipnft": "^0.4.0",
     "@types/nprogress": "^0.2.0",
     "@vueuse/components": "^9.6.0",
     "@vueuse/core": "^9.6.0",
