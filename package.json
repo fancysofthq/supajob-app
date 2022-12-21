@@ -1,7 +1,7 @@
 {
   "name": "@fancysofthq/supajob-app",
   "private": true,
-  "version": "0.2.0-rc3",
+  "version": "0.2.0-rc4",
   "license": "UNLICENSED",
   "scripts": {
     "dev": "vite",
