@@ -3,7 +3,7 @@ import * as Web3Auth from "@fancysofthq/supa-app/services/Web3Auth";
 import { useEth } from "@fancysofthq/supa-app/services/eth";
 import { CarReader, CarWriter } from "@ipld/car";
 import { iteratorToBuffer } from "@fancysofthq/supa-app/utils/iterable";
-import { Address } from "@fancysofthq/supa-app/services/eth/Address";
+import { Address } from "@fancysofthq/supa-app/models/Bytes";
 
 export async function storeCar(file: CarReader): Promise<CID> {
   const { provider, account } = useEth();

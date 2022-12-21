@@ -1,14 +1,18 @@
 import { useEth } from "@fancysofthq/supa-app/services/eth";
-import { ref, ShallowRef, markRaw, Ref } from "vue";
-import type { JobBoard } from "../../build/contracts/types/JobBoard";
-import { JobBoardFactory } from "../../build/contracts/types/JobBoardFactory";
+import { ref, Ref } from "vue";
+import {
+  IPNFT721Soulbound,
+  IPNFT721Soulbound__factory,
+} from "@fancysofthq/contracts/typechain";
+import { Address } from "@fancysofthq/supa-app/models/Bytes";
 const { onConnect } = useEth();
 
-export const jobBoardContract: Ref<JobBoard | undefined> = ref();
+export const jobsContract: Ref<IPNFT721Soulbound | undefined> = ref();
+export const app = new Address(import.meta.env.VITE_APP_ADDRESS);
 
 onConnect(async (provider, account) => {
-  jobBoardContract.value = JobBoardFactory.connect(
-    import.meta.env.VITE_JOB_BOARD_ADDRESS,
+  jobsContract.value = IPNFT721Soulbound__factory.connect(
+    import.meta.env.VITE_JOBS_ADDRESS,
     provider.getSigner()
   );
 });

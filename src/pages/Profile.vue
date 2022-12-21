@@ -65,7 +65,7 @@ onMounted(async () => {
           )
           .select-none.rounded-lg.p-2.px-3.text-white.transition(
             class="bg-black/10 hover:bg-black/20 hover:underline active:scale-95"
-          ) {{ profileAccount.address.value?.display() }}
+          ) {{ profileAccount.address.value?.toDisplayString() }}
         button.rounded-lg.p-2.transition(
           class="hover:bg-black/20 active:scale-95"
           @click="copy(notNull(profileAccount.address.value).toString())"

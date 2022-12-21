@@ -5,7 +5,6 @@
   "pugAttributeSeparator": "none",
   "plugins": [
     "@prettier/plugin-pug",
-    "prettier-plugin-solidity",
     "prettier-plugin-tailwindcss"
   ],
   "overrides": [

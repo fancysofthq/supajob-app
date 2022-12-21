@@ -6,7 +6,7 @@ import {
   ArrowTopRightOnSquareIcon,
 } from "@heroicons/vue/24/outline";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/vue/24/solid";
-import { useObjectUrl, watchDebounced } from "@vueuse/core";
+import { useObjectUrl } from "@vueuse/core";
 import CommonVue from "./Common.vue";
 import {
   computed,
@@ -17,18 +17,17 @@ import {
 } from "vue";
 import TagInput from "@fancysofthq/supa-app/components/TagInput.vue";
 import FilePicker from "@fancysofthq/supa-app/components/FilePicker.vue";
-import { jobBoardContract } from "@/services/eth";
-import { ethers, type BigNumber } from "ethers";
+import { jobsContract } from "@/services/eth";
 import { Job, type Metadata } from "@/models/Job";
 import JobVue, { Kind as JobVueKind } from "@/components/Job.vue";
-import { packIpft } from "@fancysofthq/supa-app/services/Web3Storage";
-import * as IPFT from "@fancysofthq/supa-app/services/eth/IPFT";
+import { packIpnft } from "@fancysofthq/supa-app/services/Web3Storage";
 import { useEth } from "@fancysofthq/supa-app/services/eth";
-import { Address } from "@fancysofthq/supa-app/services/eth/Address";
+import { Address } from "@fancysofthq/supa-app/models/Bytes";
 import { indexOfMulti } from "@fancysofthq/supa-app/utils/uint8";
 import Spinner from "@/components/shared/Spinner.vue";
 import * as api from "@/services/api";
 import { CID } from "multiformats/cid";
+import { IPFT } from "@nxsf/ipnft";
 
 const props = defineProps<{ open: boolean; account: Account }>();
 const emit = defineEmits(["close", "disconnect"]);
@@ -42,11 +41,8 @@ const payment: Ref<string> = ref("");
 const location: Ref<string> = ref("");
 const content: Ref<string> = ref("");
 
-const mintPrice: Ref<BigNumber | undefined> = ref();
-
 const canMint: ComputedRef<boolean> = computed(
   () =>
-    mintPrice.value !== undefined &&
     name.value.length > 0 &&
     description.value.length > 0 &&
     payment.value.length > 0 &&
@@ -72,23 +68,23 @@ enum Status {
   Complete,
 }
 
-const minting: Ref<Status | undefined> = ref();
-const uploading: Ref<Status | undefined> = ref();
+const mintingToken: Ref<Status | undefined> = ref();
+const uploadingContent: Ref<Status | undefined> = ref();
 const txConfirmation: Ref<Status | undefined> = ref();
 
 const mintButtonPressed = ref(false);
 
 const inProgress = computed(
   () =>
-    minting.value === Status.InProgress ||
-    uploading.value === Status.InProgress ||
+    mintingToken.value === Status.InProgress ||
+    uploadingContent.value === Status.InProgress ||
     txConfirmation.value === Status.InProgress
 );
 
 const isComplete = computed(
   () =>
-    minting.value === Status.Complete &&
-    uploading.value === Status.Complete &&
+    mintingToken.value === Status.Complete &&
+    uploadingContent.value === Status.Complete &&
     txConfirmation.value === Status.Complete
 );
 
@@ -113,68 +109,64 @@ const job: ComputedRef<Job> = computed(
 const jobCid: Ref<CID | undefined> = ref();
 
 async function mint() {
-  if (!jobBoardContract.value) throw new Error("No contract");
+  if (!jobsContract.value) throw new Error("No contract");
   if (!canMint.value) throw new Error("Cannot mint");
 
   mintButtonPressed.value = true;
   mintError.value = undefined;
-  minting.value = Status.InProgress;
-  uploading.value = undefined;
+  mintingToken.value = Status.InProgress;
+  uploadingContent.value = undefined;
   txConfirmation.value = undefined;
 
   const { provider } = useEth();
 
-  const tag = new IPFT.Tag(
+  const ipft = new IPFT(
     (await provider.value!.getNetwork()).chainId,
-    new Address(jobBoardContract.value!.address),
-    props.account.address.value!
+    new Address(jobsContract.value!.address).toString(),
+    props.account.address.value!.toString()
   );
 
-  const blockstore = await packIpft(job.value, tag);
+  const blockstore = await packIpnft(job.value, ipft);
   const cid = blockstore.rootCid;
   jobCid.value = cid;
   console.debug("Root CID", cid.toString());
 
   const currentAuthorOf = new Address(
-    await jobBoardContract.value.authorOf(cid.multihash.digest)
+    await jobsContract.value.contentAuthorOf(cid.multihash.digest)
   );
 
-  if (currentAuthorOf.isZero()) {
-    const tagOffset = indexOfMulti(blockstore.rootBlock.bytes, tag.toBytes());
+  if (currentAuthorOf.zero) {
+    const tagOffset = indexOfMulti(blockstore.rootBlock.bytes, ipft.toBytes());
     let tx;
 
     try {
-      tx = await jobBoardContract.value.mintFresh(
-        {
-          author: props.account.address.value!.toString(),
-          codec: cid.code,
-          content: blockstore.rootBlock.bytes,
-          tagOffset,
-        },
+      tx = await jobsContract.value.mint(
         props.account.address.value!.toString(),
         cid.multihash.digest,
-        1,
-        [],
-        { value: mintPrice.value }
+        props.account.address.value!.toString(),
+        blockstore.rootBlock.bytes,
+        cid.code,
+        tagOffset,
+        false
       );
     } catch (e: any) {
       console.error(e);
-      minting.value = Status.Error;
+      mintingToken.value = Status.Error;
       mintError.value = new Error("Transaction failed");
       return;
     }
 
     console.debug("Minted", tx.hash);
 
-    minting.value = Status.Complete;
-    uploading.value = Status.InProgress;
+    mintingToken.value = Status.Complete;
+    uploadingContent.value = Status.InProgress;
     txConfirmation.value = Status.InProgress;
 
     await Promise.all([
       api
         .storeCar(blockstore.toCar())
         .then((res) => {
-          uploading.value = Status.Complete;
+          uploadingContent.value = Status.Complete;
 
           if (!cid.equals(res)) {
             throw new Error("Root CID mismatch");
@@ -182,7 +174,7 @@ async function mint() {
         })
         .catch((e: any) => {
           console.debug("Upload failed", e);
-          uploading.value = Status.Error;
+          uploadingContent.value = Status.Error;
           mintError.value = new Error("Upload failed");
         }),
 
@@ -198,7 +190,7 @@ async function mint() {
         }),
     ]);
   } else {
-    minting.value = Status.Error;
+    mintingToken.value = Status.Error;
     mintError.value = new Error("Already minted!");
 
     // TODO: Mint again
@@ -231,8 +223,8 @@ async function cleanup(): Promise<boolean> {
     return false;
   }
 
-  minting.value = undefined;
-  uploading.value = undefined;
+  mintingToken.value = undefined;
+  uploadingContent.value = undefined;
   txConfirmation.value = undefined;
   mintError.value = undefined;
   mintButtonPressed.value = false;
@@ -251,15 +243,6 @@ async function cleanup(): Promise<boolean> {
 async function tryClose(): Promise<void | null> {
   (await cleanup()) ? emit("close") : null;
 }
-
-watchDebounced(
-  jobBoardContract,
-  async (contract) => {
-    if (contract) mintPrice.value = await contract.mintPrice();
-    else mintPrice.value = undefined;
-  },
-  { debounce: 500, maxWait: 1000, immediate: true }
-);
 </script>
 
 <template lang="pug">
@@ -365,38 +348,43 @@ CommonVue(:open="open" @close="tryClose" panel-class="w-full max-w-5xl")
 
           .flex.flex-col.gap-2.p-3
             button.flex.w-full.items-center.justify-center.gap-1.rounded-lg.bg-gradient-to-r.from-purple-500.to-pink-500.px-5.text-center.text-white.transition(
-              v-if="mintPrice"
               :disabled="!canMint || mintButtonPressed || isComplete"
               class="py-2.5 hover:bg-gradient-to-l focus:outline-none focus:ring-2 focus:ring-purple-200 active:scale-95 disabled:bg-gradient-to-l disabled:focus:ring-0 disabled:active:scale-100"
               :class="{ 'opacity-50 cursor-not-allowed': !canMint, 'cursor-default': mintButtonPressed }"
               @click="mint"
             )
-              span(v-if="!mintButtonPressed") Mint for {{ ethers.utils.formatEther(mintPrice) }} ETH
+              span(v-if="!mintButtonPressed") Mint
               .flex.flex-col.items-start.p-1(
                 v-else
                 style="grid-template-columns: min-content auto"
               )
                 .flex.h-7.items-center.gap-1
                   .flex.h-7.w-7.items-center.justify-center
-                    CheckCircleIcon.h-7.w-7(v-if="minting === Status.Complete")
-                    XCircleIcon.h-7.w-7(v-else-if="minting === Status.Error")
+                    CheckCircleIcon.h-7.w-7(
+                      v-if="mintingToken === Status.Complete"
+                    )
+                    XCircleIcon.h-7.w-7(
+                      v-else-if="mintingToken === Status.Error"
+                    )
                     Spinner.h-5.w-5.fill-pink-500(
-                      v-else-if="minting === Status.InProgress"
+                      v-else-if="mintingToken === Status.InProgress"
                     )
                     Spinner.h-5.w-5(v-else)
                   span.font-medium
                     span Minting token
                     sup.ml-1 (eth)
                 .flex.h-7.items-center.gap-1(
-                  :class="{ 'opacity-50': !uploading }"
+                  :class="{ 'opacity-50': !uploadingContent }"
                 )
                   .flex.h-7.w-7.items-center.justify-center
                     CheckCircleIcon.h-7.w-7(
-                      v-if="uploading === Status.Complete"
+                      v-if="uploadingContent === Status.Complete"
                     )
-                    XCircleIcon.h-7.w-7(v-else-if="uploading === Status.Error")
+                    XCircleIcon.h-7.w-7(
+                      v-else-if="uploadingContent === Status.Error"
+                    )
                     Spinner.h-5.w-5.fill-pink-500(
-                      v-else-if="uploading === Status.InProgress"
+                      v-else-if="uploadingContent === Status.InProgress"
                     )
                     Spinner.h-5.w-5(v-else)
                   span.font-medium
