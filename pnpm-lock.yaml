@@ -2,8 +2,8 @@ lockfileVersion: 5.4
 
 specifiers:
   '@fancysoft/contracts': ^0.1.0
-  '@fancysofthq/supa-app': 0.5.0-rc1
-  '@fancysofthq/supajob-api': 0.3.0-rc1
+  '@fancysofthq/supa-app': ^0.5.0
+  '@fancysofthq/supajob-api': ^0.3.0
   '@headlessui/vue': ^1.7.4
   '@heroicons/vue': ^2.0.13
   '@ipld/car': ^5.0.1
@@ -42,8 +42,8 @@ specifiers:
 
 dependencies:
   '@fancysoft/contracts': 0.1.0
-  '@fancysofthq/supa-app': 0.5.0-rc1
-  '@fancysofthq/supajob-api': 0.3.0-rc1
+  '@fancysofthq/supa-app': 0.5.0
+  '@fancysofthq/supajob-api': 0.3.0
   '@headlessui/vue': 1.7.6_vue@3.2.45
   '@heroicons/vue': 2.0.13_vue@3.2.45
   '@ipld/car': 5.0.1
@@ -456,8 +456,8 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@fancysofthq/supa-app/0.5.0-rc1:
-    resolution: {integrity: sha512-OLtS6EAKytib5PyTeMRzt10q05cZlKfYRo+I1cL3PthQ5Bg7E33pxPa6S0gvz0ZAD6vPlCrP/ZUuHz1L7C8GHA==, tarball: download/@fancysofthq/supa-app/0.5.0-rc1/186a136e928b6aa9aa6257e53efd9f58cb114186}
+  /@fancysofthq/supa-app/0.5.0:
+    resolution: {integrity: sha512-pxg3517c25lJEfo76FcdUUXJ3oHHcKYqAUqmgzd+0ER0UQ67HQnWAcJmRhDYKKyYqR5O8Z7uCW3Ja7wxejWmjg==, tarball: download/@fancysofthq/supa-app/0.5.0/447e4f10d0744f0cf30d7c49b6afaefb641d16f2}
     dependencies:
       '@ethersproject/contracts': 5.7.0
       '@ethersproject/providers': 5.7.2
@@ -491,8 +491,8 @@ packages:
     engines: {node: ^18.0, npm: ^8.0}
     dev: false
 
-  /@fancysofthq/supajob-api/0.3.0-rc1:
-    resolution: {integrity: sha512-aFB4qed06YqWvX5gphFxJGlFS0gYHqlKehRzyyluww20zmM38eHUe0KNGOLFwF1C8ffhoq/bGVr9FgYufeTBBw==, tarball: download/@fancysofthq/supajob-api/0.3.0-rc1/4ecf5a237afafbef1411efb9c10b23bde66acae1}
+  /@fancysofthq/supajob-api/0.3.0:
+    resolution: {integrity: sha512-cro8T1iFwquGVwiRQ/3pXI7IKbXGSlPuMQiofzsO8RxM5v5lcXvDn3VWxYxb7k5eXg7O8zPZAiNdDYXryMsz5Q==, tarball: download/@fancysofthq/supajob-api/0.3.0/ab8a01d536afb34774944412e53bb2ba019851a7}
     engines: {node: ^18.0, npm: ^8.0}
     dependencies:
       '@fancysoft/contracts': 0.1.0
