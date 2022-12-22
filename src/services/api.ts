@@ -3,7 +3,8 @@ import * as Web3Auth from "@fancysofthq/supa-app/services/Web3Auth";
 import { useEth } from "@fancysofthq/supa-app/services/eth";
 import { CarReader, CarWriter } from "@ipld/car";
 import { iteratorToBuffer } from "@fancysofthq/supa-app/utils/iterable";
-import { Address } from "@fancysofthq/supa-app/models/Bytes";
+import { Address } from "@fancysofthq/supabase";
+import { Job } from "@fancysofthq/supajob-api/server";
 
 export async function storeCar(file: CarReader): Promise<CID> {
   const { provider, account } = useEth();
@@ -67,18 +68,6 @@ export async function storeCar(file: CarReader): Promise<CID> {
   return CID.parse(await response.text());
 }
 
-type Job = {
-  cid: CID;
-  author: Address;
-  block: number;
-};
-
-type JobDto = {
-  cid: string;
-  author: string;
-  block: number;
-};
-
 export async function getJobs(): Promise<Job[]> {
   const response = await fetch(
     new URL(import.meta.env.VITE_API_URL) + "v1/jobs"
@@ -88,11 +77,7 @@ export async function getJobs(): Promise<Job[]> {
     throw new Error("Failed to get jobs");
   }
 
-  return (await response.json()).map((job: JobDto) => ({
-    cid: CID.parse(job.cid),
-    author: new Address(job.author),
-    block: job.block,
-  }));
+  return (await response.json()).map((dto: any) => Job.fromJSON(dto));
 }
 
 export async function getJob(cid: CID): Promise<Job | undefined> {
@@ -104,13 +89,7 @@ export async function getJob(cid: CID): Promise<Job | undefined> {
     return undefined;
   }
 
-  const job = await response.json();
-
-  return {
-    cid: CID.parse(job.cid),
-    author: new Address(job.author),
-    block: job.block,
-  };
+  return Job.fromJSON(await response.json());
 }
 
 export async function getJobsFrom(address: Address): Promise<Job[]> {
@@ -122,11 +101,5 @@ export async function getJobsFrom(address: Address): Promise<Job[]> {
     throw new Error("Failed to get jobs");
   }
 
-  return (await response.json()).map(
-    (job: JobDto): Job => ({
-      cid: CID.parse(job.cid),
-      author: new Address(job.author),
-      block: job.block,
-    })
-  );
+  return (await response.json()).map((dto: any) => Job.fromJSON(dto));
 }

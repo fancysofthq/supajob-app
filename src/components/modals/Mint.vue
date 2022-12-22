@@ -22,7 +22,7 @@ import { Job, type Metadata } from "@/models/Job";
 import JobVue, { Kind as JobVueKind } from "@/components/Job.vue";
 import { packIpnft } from "@fancysofthq/supa-app/services/Web3Storage";
 import { useEth } from "@fancysofthq/supa-app/services/eth";
-import { Address } from "@fancysofthq/supa-app/models/Bytes";
+import { Address } from "@fancysofthq/supabase";
 import { indexOfMulti } from "@fancysofthq/supa-app/utils/uint8";
 import Spinner from "@/components/shared/Spinner.vue";
 import * as api from "@/services/api";
@@ -122,7 +122,7 @@ async function mint() {
 
   const ipft = new IPFT(
     (await provider.value!.getNetwork()).chainId,
-    new Address(jobsContract.value!.address).toString(),
+    Address.from(jobsContract.value!.address).toString(),
     props.account.address.value!.toString()
   );
 
@@ -131,7 +131,7 @@ async function mint() {
   jobCid.value = cid;
   console.debug("Root CID", cid.toString());
 
-  const currentAuthorOf = new Address(
+  const currentAuthorOf = Address.from(
     await jobsContract.value.contentAuthorOf(cid.multihash.digest)
   );
 
