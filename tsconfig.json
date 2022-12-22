@@ -6,7 +6,7 @@
     "moduleResolution": "Node",
     "strict": true,
     "jsx": "preserve",
-    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
     "esModuleInterop": true,
     "lib": ["ESNext", "DOM"],

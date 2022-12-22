@@ -18,5 +18,8 @@ export default defineConfig({
       ".d.ts",
     ],
   },
+  optimizeDeps: {
+    include: ["bn.js", "js-sha3", "hash.js", "aes-js", "scrypt-js", "bech32"],
+  },
   plugins: [vue()],
 });
